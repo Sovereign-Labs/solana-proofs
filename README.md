@@ -1,4 +1,8 @@
+## About
+This work is a byproduct of research that Sovereign was doing for a different feature. A subset of that research was useful for accomplishing attestations on state, so this is a WIP / POC to test out that idea an apply it for validator attestations on account state. The code is untested and mainly serves to illustrate the idea
+
 ## Background
+
 * We want a subset of selected validators (or quorum) to sign off on the "state" of a specific account
 * Every solana account has the general structure
 ```rust
