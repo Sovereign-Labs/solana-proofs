@@ -1,0 +1,6 @@
+{
+    "libpath": "~/solana-proofs/account_proof_geyser/target/release/libaccount_proof_geyser.dylib",
+    "bind_address": "127.0.0.1:10000",
+    "account_list": ["HUCqeLS83V9GNaZWxsHZ2ac833dbks3NjkBRS4kaZGvM"],
+    "vote_accounts": ["6KndTo4my9pgjeNrA49ejDJ9ACVBXCvoBPH9bZ2Tk6Hn"]
+}
