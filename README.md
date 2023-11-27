@@ -1,5 +1,7 @@
 ## About
-This work is a byproduct of research that Sovereign was doing for a different feature. A subset of that research was useful for accomplishing attestations on state, so this is a WIP / POC to test out that idea and apply it for solana validator attestations on account state. The code is untested and mainly serves to illustrate the idea
+This work is a byproduct of research that Sovereign was doing for a different feature. A subset of that research was useful for accomplishing attestations on state, so this is a WIP / POC to test out that idea and apply it for solana validator attestations on account state. The code is untested and mainly serves to illustrate the idea.
+
+This is currently a WIP and documentation will be updated as other components are added (vote verification, committee determination)
 
 ## Background
 
