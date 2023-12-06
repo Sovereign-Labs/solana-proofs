@@ -27,7 +27,7 @@ use tokio::sync::broadcast;
 use crate::config::Config;
 use crate::types::{
     AccountHashAccumulator, AccountInfo, BankHashProof, BlockInfo, GeyserMessage, SlotInfo,
-    TransactionInfo, TransactionSigAccumulator, VoteAccumulator, Update, VoteInfo
+    TransactionInfo, TransactionSigAccumulator, VoteAccumulator, Update, VoteInfo, SlotHashProofAccumulator
 };
 use crate::utils::{
     assemble_account_delta_inclusion_proof, calculate_root_and_proofs,
@@ -62,17 +62,15 @@ fn handle_confirmed_slot(
         .cloned()
         .collect();
 
-    // Store SlotHash proofs for every Confirmed Slot?
-    // Are there votes in this slot for a
+    // Store SlotHash proofs for every Confirmed Slot
 
     let slothash_pubkey = Pubkey::from_str(&SLOT_HASH_ACCOUNT).unwrap();
     let slothash_account_data = account_hashes_data.get(&slothash_pubkey).unwrap().2.data.clone();
     let slothashes: SlotHashes = bincode::deserialize(&slothash_account_data).unwrap();
     filtered_pubkeys.push(slothash_pubkey);
 
-    // We start aggregation of votes if there are pending updates
 
-
+    // This doesn't need to exist because slothashes will always be part of the account_delta_hash
     if filtered_pubkeys.len() == 0 {
         block_accumulator.remove(&slot);
         processed_slot_account_accumulator.remove(&slot);
@@ -176,8 +174,7 @@ fn process_messages(
     let mut raw_vote_accumulator: VoteAccumulator = HashMap::new();
     let mut processed_vote_accumulator: VoteAccumulator = HashMap::new();
 
-    // map slots to slot
-    let mut slot_hash_proofs_accumulator = HashMap::new();
+    let mut slothash_accumulator: SlotHashProofAccumulator = HashMap::new();
 
     let mut pending_updates: HashMap<Hash,Update> = HashMap::new();
 
