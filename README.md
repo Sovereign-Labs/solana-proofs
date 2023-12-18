@@ -1,27 +1,12 @@
-## Overview
+## About
 
-"The ***** is a proof of concept for an on-chain SPV (Simple Payment Verification) light client component developed for the Solana blockchain. This work is inspired by a line of research that Sovereign Labs was doing for another feature, which required attestations on state. SPV light clients were not thought to be possible on Solana as it currently exists without further changes to Solana consensus, but this finding* bypasses many of these requirements and helps expedite the development of light clients for Solana by removing the risks associated with a core protocol change. 
+"The ***** is a proof of concept for an on-chain SPV (Simple Payment Verification) light client component developed for the Solana blockchain. This work is inspired by a line of research that Sovereign Labs was doing for another feature, which required attestations on state. SPV light clients were not thought to be possible on Solana as it currently exists without further changes to Solana consensus, but this finding bypasses many of these requirements and helps expedite the development of light clients for Solana by removing the risks associated with a core protocol change. 
 
 Note that this carries an honest majority assumption from the validator set (hence we use the term attestations).
 
-The solution here involves the usage of the ****** program which generates a hash of *** Solana account state in order to include it into the ‘accounts_delta_hash’ which in turn is included in the bank hash and is attested to by the validator set. Users can submit a transaction to directly verify the state of an account using these proofs without needing to fully trust the account state information communicated by an intermediary RPC provider. 
+The solution here involves the usage of the ****** program which generates a hash of Solana account state in order to include it into the ‘accounts_delta_hash’ which in turn is included in the bank hash and is attested to by the validator set. Users can submit a transaction to directly verify the state of an account using these proofs without needing to fully trust the account state information communicated by an intermediary RPC provider. 
 
-Here we provide the reader with a short overview of this new design followed by a proof of concept coding* implementation.
-
-
-## Current Prototype
-
-1. Geyser plugin to monitor updates and generate proofs
-
-2. On-chain program to provide the copy hash functionality
-
-3. The client will:
-   * Get the state of an account from the RPC
-   * Submit the copy_hash instruction
-   * Open a connection to the geyser plugin and stream the proofs
-
-
-## Background 
+## Background
 
 The goal of a light client is to reduce trust assumptions when using centralized RPC endpoints. Rather than relying on a RPC provider to truthfully communicate information about the particular state of certain accounts (i.e. user’s balances, bridge accounts, etc), when a RPC provider communicates certain information about Solana state, users can request further cryptographic proof and an attestation from validators to directly check its veracity.
 
@@ -87,6 +72,17 @@ BankHash1  <-       BankHash2       <-      BankHash3          <-        BankHas
                     SourceAccount             BankHash2                   BankHash2)             BankHash2)
                         
 ```
+
+## Current Prototype
+
+1. Geyser plugin to monitor updates and generate proofs
+
+2. On-chain program to provide the copy hash functionality
+
+3. The client will:
+   * Get the state of an account from the RPC
+   * Submit the copy_hash instruction
+   * Open a connection to the geyser plugin and stream the proofs
 
 ## Implementation Notes and Needed Improvements
 
