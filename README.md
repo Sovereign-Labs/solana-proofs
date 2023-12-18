@@ -35,7 +35,7 @@ pub struct Account {
 }
 ```
 
-For each new block, all accounts where state has been modified are included in the 16-ary merkle tree whose leaves are ordered and the root is called the ‘accounts_delta_hash’. The  ‘accounts_delta_hash’ is further hashed into the `BankHash` along with the parent_bankhash, num_sigs, and blockhash. The BankHash is a cryptographic commitment that Solana validators vote on for each slot. Each BankHash is calculated as follows:
+For each new block, all accounts where state has been modified are included in the 16-ary merkle tree whose leaves are ordered and the root is called the `accounts_delta_hash`. The  `accounts_delta_hash` is further hashed into the `BankHash` along with the `parent_bankhash`, `num_sigs`, and `blockhash`. The `BankHash` is a cryptographic commitment that Solana validators vote on for each slot. Each BankHash is calculated as follows:
 ```
 hashv(&[
     parent_bankhash
@@ -47,7 +47,7 @@ hashv(&[
 
 ## The Copy-on-Chain Program
 
-Because an account may not change every slot, a mechanism is required to ensure its latest state can still be included in a recent `BankHash` for cryptographic proof generation. This is where the Copy-on-Chain (`copy`) program comes in. It takes an account's state, computes its hash, and copies it into a `CopyAccount`. The alteration of the `CopyAccount` ensures the account's state becomes part of the slot's ‘accounts_delta_hash’, and therefore also part of the`BankHash`, against which a proof can be generated for the user. Checking for an account's modification and its presence in the BankHash is equivalent to checking transaction status because an account is only modified when the transaction is successful. In summary, the purpose of the `copy` program is that calculating and writing the hash ends up modifying `CopyAccount` during a slot and commits to the hash stored in `CopyAccount` as part of the `accounts_delta_hash` which is then rolled into the `BankHash`.
+Because an account may not change every slot, a mechanism is required to ensure its latest state can still be included in a recent `BankHash` for cryptographic proof generation. This is where the Copy-on-Chain (`copy`) program comes in. It takes an account's state, computes its hash, and copies it into a `CopyAccount`. The alteration of the `CopyAccount` ensures the account's state becomes part of the slot's `accounts_delta_hash`, and therefore also part of the`BankHash`, against which a proof can be generated for the user. Checking for an account's modification and its presence in the `BankHash` is equivalent to checking transaction status because an account is only modified when the transaction is successful. In summary, the purpose of the `copy` program is that calculating and writing the hash ends up modifying `CopyAccount` during a slot and commits to the hash stored in `CopyAccount` as part of the `accounts_delta_hash` which is then rolled into the `BankHash`.
 
 * The `copy` program takes two main accounts as input
   * A global scoped PDA - `CopyAccount`
@@ -56,7 +56,7 @@ Because an account may not change every slot, a mechanism is required to ensure 
 * The `copy` program has a single instruction
   1) `copy_hash` reads the fields of `SourceAccount`
   2) The contents of the `SourceAccount` are hashed
-  3)  The hash is written into the `CopyAccount’ data***** field
+  3)  The hash is written into the `CopyAccount’ data ********8***** field
   Note: If there are multiple calls to `copy_hash` in the same block, the hashes are rolled together
 
 * This means that we can now produce 
@@ -69,7 +69,7 @@ Because an account may not change every slot, a mechanism is required to ensure 
 
 * The below diagram indicates what the structure might look like when we want an attestation for 4 validators for `BankHash (n)`
   - `BankHash (n)` is associated with the slot in which the CopyAccount is created by the `copy` program
-  - Validators 1 and 2 land their votes in the slot that follows, and the vote state includes a `SlotHashes` field that *****
+  - Validators 1 and 2 land their votes in the slot that follows, and the vote state includes a `SlotHashes` field that **********
   - Validators 3 and 4 land their votes in later slots but these still include BankHash (n) in their vote's `SlotHashes`
   - This same logic can be applied to a larger portion of the validator set to obtain supermajority guarantees assuming stake information is retrieved
 ```
