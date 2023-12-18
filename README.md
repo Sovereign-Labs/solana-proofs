@@ -9,7 +9,7 @@ Author: Dubbelosix
 Here we developed a proof of concept for an on-chain SPV (Simple Payment Verification) light client component for the Solana blockchain. This work is inspired by a line of research that Sovereign Labs was doing for another feature, which required attestations on state. _SPV light clients were not thought to be possible on Solana as it currently exists without further changes to Solana consensus_, but this finding bypasses many of these requirements and helps expedite the development of light clients for Solana by removing the risks associated with a core protocol change. 
 
 The solution here involves the usage of the ****** program which generates a hash of Solana account state in order to include it into the `accounts_delta_hash` which in turn is included in the 
-`BankHash` and is attested to by the validator set. Users can submit a transaction to directly verify the state of an account using these proofs without needing to fully trust the account state information communicated by an intermediary RPC provider. Note that this still carries an honest majority assumption from the validator set (hence we use the term attestations).
+`BankHash` and is attested to by the validator set. Users can submit a transaction to directly verify the state of an account using these proofs without needing to fully trust the account state information communicated by an intermediary RPC provider. Note that this still carries an honest majority assumption from the validator set, hence we use the term 'attestations'.
 
 ## Background
 
