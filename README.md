@@ -69,8 +69,8 @@ Because an account may not change every slot, a mechanism is required to ensure 
 
 * The below diagram indicates what the structure might look like when we want an attestation for 4 validators for `BankHash (n)`
   - `BankHash (n)` is associated with the slot in which the CopyAccount is created by the `copy` program
-  - Validators 1 and 2 land their votes in the slot that follows, and the vote state includes a SlotHashes field that *****
-  - Validators 3 and 4 land their votes in later slots but these still include BankHash (n) in their vote's SlotHashes
+  - Validators 1 and 2 land their votes in the slot that follows, and the vote state includes a `SlotHashes` field that *****
+  - Validators 3 and 4 land their votes in later slots but these still include BankHash (n) in their vote's `SlotHashes`
   - This same logic can be applied to a larger portion of the validator set to obtain supermajority guarantees assuming stake information is retrieved
 ```
                                           Validator 1's vote
