@@ -17,6 +17,7 @@ The goal of a light client is to reduce trust assumptions when using centralized
 
 When we refer to the “state” of an account, we refer to the data stored in the account fields shown in the general account structure below:
 
+```rust
 use solana_sdk::pubkey::Pubkey;
 use solana_sdk::account::Epoch;
 
@@ -32,6 +33,7 @@ pub struct Account {
     /// the epoch at which this account will next owe rent
     pub rent_epoch: Epoch,
 }
+```
 
 For each new block, all accounts where state has been modified are included in the 16-ary merkle tree whose leaves are ordered and the root is called the ‘accounts_delta_hash’. The  ‘accounts_delta_hash’ is further hashed into the `BankHash` along with the parent_bankhash, num_sigs, and blockhash. The BankHash is a cryptographic commitment that Solana validators vote on for each slot. Each BankHash is calculated as follows:
 ```
