@@ -1,3 +1,9 @@
+---
+Title: "SPV Copy on Chain mechanism for Solana"
+Created: "2023-12-05"
+Author: Dubbelosix
+---
+
 ## About
 
 "The ***** is a proof of concept for an on-chain SPV (Simple Payment Verification) light client component developed for the Solana blockchain. This work is inspired by a line of research that Sovereign Labs was doing for another feature, which required attestations on state. SPV light clients were not thought to be possible on Solana as it currently exists without further changes to Solana consensus, but this finding bypasses many of these requirements and helps expedite the development of light clients for Solana by removing the risks associated with a core protocol change. 
