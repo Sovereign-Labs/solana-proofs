@@ -67,16 +67,20 @@ Because an account may not change every slot, a mechanism is required to ensure 
     * The above is made somewhat easier because we have the `SlotHashes` on-chain account which contains a vector of recent `BankHashes`
     * This means we don't need to chain the BankHashes - we can instead take the vote on a BankHash and if the SlotHashes account for that block contains our `BankHash`, that should be sufficient.
 
-* The below diagram indicates what the structure might look like when we want an attestation for 4 validators for `BankHash2`
+* The below diagram indicates what the structure might look like when we want an attestation for 4 validators for `BankHash (n)`
+  - `BankHash (n)` is the slot in which the CopyAccount is created by the `copy` program
+  - Validators 1 and 2 land their votes in the slot that follows, and the vote state includes a SlotHashes field that *****
+  - Validators 3 and 4 land their votes in later slots but these still include BankHash (n) in their vote's SlotHashes
+  - This same logic can be applied to a larger portion of the validator set to obtain supermajority guarantees assuming stake information is retrieved
 ```
                                             validator2_vote              
                                             validator1_vote            validator3_vote         validator4_vote
                                                  ||                         ||                      ||
-BankHash1  <-       BankHash2       <-      BankHash3          <-        BankHash4      <-        BankHash5       <-     BankHash6
-                       ||                        ||                         ||                      ||
-                    CopyAccount               SlotHashes                 SlotHashes               SlotHashes              
-                       ||                    (should contain             (should contain        (should contain
-                    SourceAccount             BankHash2                   BankHash2)             BankHash2)
+BankHash (n-1)   <-   BankHash (n)    <-     BankHash (n+1)     <-     BankHash (n+2)    <-     BankHash (n+3)     <-     BankHash (n+4)
+                          ||                     ||                         ||                      ||
+                      CopyAccount            SlotHashes                 SlotHashes               SlotHashes              
+                          ||               (should contain            (should contain         (should contain
+                     SourceAccount          BankHash (n)               BankHash (n))            BankHash (n))
                         
 ```
 
