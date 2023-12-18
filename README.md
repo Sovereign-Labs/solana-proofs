@@ -73,8 +73,8 @@ Because an account may not change every slot, a mechanism is required to ensure 
   - Validators 3 and 4 land their votes in later slots but these still include BankHash (n) in their vote's SlotHashes
   - This same logic can be applied to a larger portion of the validator set to obtain supermajority guarantees assuming stake information is retrieved
 ```
-                                            validator2_vote              
-                                            validator1_vote            validator3_vote         validator4_vote
+                                          Validator 1's vote
+                                          Validator 2's vote        Validator 3's vote       Validator 4's vote
                                                  ||                         ||                      ||
 BankHash (n-1)   <-   BankHash (n)    <-     BankHash (n+1)     <-     BankHash (n+2)    <-     BankHash (n+3)     <-     BankHash (n+4)
                           ||                     ||                         ||                      ||
