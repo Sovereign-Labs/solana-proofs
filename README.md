@@ -1,5 +1,5 @@
 ---
-Title: "The Copy-on-Chain Mechanism for Solana SPV Light Clients"
+Title: "The Copy-on-Chain Mechanism for SPV Light Clients on Solana"
 Created: "2023-11-24"
 Author: Dubbelosix
 ---
