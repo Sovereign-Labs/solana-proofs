@@ -10,7 +10,8 @@ Author: Dubbelosix
 
 Note that this carries an honest majority assumption from the validator set (hence we use the term attestations).
 
-The solution here involves the usage of the ****** program which generates a hash of Solana account state in order to include it into the ‘accounts_delta_hash’ which in turn is included in the bank hash and is attested to by the validator set. Users can submit a transaction to directly verify the state of an account using these proofs without needing to fully trust the account state information communicated by an intermediary RPC provider. 
+The solution here involves the usage of the ****** program which generates a hash of Solana account state in order to include it into the `accounts_delta_hash` which in turn is included in the 
+`BankHash` and is attested to by the validator set. Users can submit a transaction to directly verify the state of an account using these proofs without needing to fully trust the account state information communicated by an intermediary RPC provider. 
 
 ## Background
 
