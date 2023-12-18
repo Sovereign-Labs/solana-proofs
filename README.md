@@ -86,7 +86,7 @@ BankHash (n-1)   <-   BankHash (n)    <-     BankHash (n+1)     <-     BankHash 
 
 ## Current Prototype
 
-1. Geyser plugin to monitor updates and generate proofs
+1. [Geyser plugin](https://docs.solana.com/developing/plugins/geyser-plugins) to monitor updates and generate proofs
 
 2. On-chain program to provide the copy hash functionality
 
@@ -101,7 +101,7 @@ A geyser plugin is currently used for this proof of concept out of ease, but thi
 
 For this light client design we need to generate the proofs in-flight because we can only generate the proofs to the root for the current block. By the next block, if the Copy-on-Chain program didn’t store the new state hash of interest once again, the accounts_delta_hash will no longer include the commitments related to the accounts of interest. While this may increase the amount of storage and processing required, prover centralization is not an issue as censorship is the only vector and its f+1, and the job of proof generation can be easily bundled with a specific RPC or full node.
 
-In this first proof of concept, we currently set the validators whose votes we want to capture as part of the geyser config. This is not the ideal supermajority of votes sought out, but even this reduces the amount of trust a user needs to place in information received from a RPC provider. Ultimately, this should be improved to capture a larger quorum of votes where the validator set is known along with the stake weight of each validator. This step can wait until a SIMD such as the proposed stake sysvar, or it can theoretically be done as part of the [Epoch Accounts Hash](https://docs.solana.com/implemented-proposals/epoch_accounts_hash#:~:text=This%20will%20be%20known%20as,issues%20within%201%2D2%20epochs.), which wouldn’t require consensus changes but needs to be further explored.
+In this first proof of concept, we currently set the validators whose votes we want to capture as part of a geyser config. This is not the ideal supermajority of votes sought out, but even this reduces the amount of trust a user needs to place in information received from a RPC provider. Ultimately, this should be improved to capture a larger quorum of votes where the validator set is known along with the stake weight of each validator. This step can wait until a SIMD such as the proposed stake sysvar, or it can theoretically be done as part of the [Epoch Accounts Hash](https://docs.solana.com/implemented-proposals/epoch_accounts_hash#:~:text=This%20will%20be%20known%20as,issues%20within%201%2D2%20epochs.), which wouldn’t require consensus changes but needs to be further explored.
 
 * The current implementation doesn't have sessions and is meant purely as a PoC
 * The merkle proof generation logic needs to be tested thoroughly
