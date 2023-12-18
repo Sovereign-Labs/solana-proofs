@@ -6,14 +6,14 @@ Author: Dubbelosix
 
 ## About
 
-Here we have developed a proof of concept for an on-chain SPV ([Simple Payment Verification](https://docs.solana.com/proposals/simple-payment-and-state-verification)) light client component for the Solana blockchain which will help expedite development on light clients by removing the risks associated with a core protocol change. This work is inspired by a line of research that Sovereign Labs was doing for another feature, which required attestations on state. SPV light clients were not thought to be possible on Solana as it currently exists without further changes to Solana consensus, but this finding bypasses many of these requirements.
+Here we have developed a proof of concept for an on-chain SPV ([Simple Payment Verification](https://docs.solana.com/proposals/simple-payment-and-state-verification)) light client component for the Solana blockchain which will help expedite development on light clients by removing the risks associated with a core protocol change. This work is inspired by a line of research that Sovereign Labs was doing for another feature, which required attestations on state. SPV light clients were not thought to be possible on Solana as it currently exists without further changes to Solana consensus (i.e. transaction receipt roots), but this finding bypasses many of these requirements.
 
 The solution here involves the usage of the Copy-on-Chain (`copy`) program which generates a hash of Solana account state in order to include it into the `accounts_delta_hash` which in turn is included in the 
-`BankHash` and is attested to by the validator set. Users can submit a transaction to directly verify the state of an account using these proofs without needing to fully trust the account state information communicated by an intermediary RPC provider. Note that this still carries an honest majority assumption from the validator set, hence we use the term 'attestations'.
+`BankHash` and is attested to by the validator set. If using these proofs, users can submit a transaction to directly verify the state of an account without needing to fully trust the account state information communicated by an intermediary RPC provider. Note that this still carries trust assumptions from the validator set, hence we use the term 'attestations'.
 
 ## Background
 
-The goal of a light client is to reduce trust assumptions when using centralized RPC endpoints. Rather than relying on a RPC provider to truthfully communicate information about the particular state of certain accounts (i.e. user’s balances, bridge accounts, etc), when a RPC provider communicates certain information about Solana state, users can request further cryptographic proof and an attestation from validators to directly check its veracity.
+The goal of a light client is to reduce trust assumptions when using centralized RPC endpoints. Rather than relying on a RPC provider to truthfully communicate information about the particular state of certain accounts (i.e. user’s balances, bridge accounts, etc), when a RPC provider communicates certain information about Solana state, users can request further cryptographic proof and an attestation from validators to directly check its veracity. For more background on this subject and its usecases, we recommend reading this documentation about [interchain transaction verification](https://docs.solana.com/proposals/interchain-transaction-verification) from Solana Labs and this introduction to light clients by a16z.
 
 When we refer to the “state” of an account, we refer to the data stored in the account fields shown in the general account structure below:
 
@@ -68,10 +68,10 @@ Because an account may not change every slot, a mechanism is required to ensure 
     * This means we don't need to chain the BankHashes - we can instead take the vote on a BankHash and if the SlotHashes account for that block contains our `BankHash`, that should be sufficient.
 
 * The below diagram indicates what the structure might look like when we want an attestation for 4 validators for `BankHash (n)`
-  - BankHash (n) is associated with the slot in which the CopyAccount is created by the `copy` program
-  - Validators 1 and 2 land their votes in the slot that follows, and the vote state includes a `SlotHashes` field that **********
-  - Validators 3 and 4 land their votes in later slots but these still include BankHash (n) in their vote's `SlotHashes`
-  - This same logic can be applied to a larger portion of the validator set to obtain supermajority guarantees assuming stake information is retrieved
+  - BankHash (n) is associated with the slot in which the CopyAccount is created by the `copy` program.
+  - Validators 1 and 2 land their votes in the slot that follows, which includes BankHash (n) in its `SlotHashes` field.
+  - Validators 3 and 4 land their votes in later slots but these still include BankHash (n) in the `SlotHashes` field as well.
+  - This same logic can be applied to a larger portion of the validator set to obtain supermajority guarantees assuming stake information is retrieved.
 ```
                                           Validator 1's vote
                                           Validator 2's vote        Validator 3's vote       Validator 4's vote
