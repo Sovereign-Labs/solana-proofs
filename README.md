@@ -60,7 +60,7 @@ Because an account may not change every slot, a mechanism is required to ensure 
   Note: If there are multiple calls to `copy_hash` in the same block, the hashes are rolled together
 
 * This means that we can now produce 
-  1) A proof of `CopyAccount`s state to the `accounts_delta_hash`
+  1) A proof of `CopyAccount`'s state to the `accounts_delta_hash`
   2) A proof for `accounts_delta_hash` as part of the `BankHash`
   3) A set of validators that have attested to the above `BankHash`
     * Note that since each `BankHash` commits to the previous one, we don't need votes on the specific `BankHash` itself, but we can use any subsequent vote as well
