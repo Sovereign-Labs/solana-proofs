@@ -8,7 +8,7 @@ Author: Dubbelosix
 
 Here we have developed a proof of concept for an on-chain SPV ([Simple Payment Verification](https://docs.solana.com/proposals/simple-payment-and-state-verification)) light client component for the Solana blockchain which will help expedite development on light clients by removing the risks associated with a core protocol change. This work is inspired by a line of research that Sovereign Labs was doing for another feature, which required attestations on state. SPV light clients were not thought to be possible on Solana as it currently exists without further changes to Solana consensus, but this finding bypasses many of these requirements.
 
-The solution here involves the usage of the ****** program which generates a hash of Solana account state in order to include it into the `accounts_delta_hash` which in turn is included in the 
+The solution here involves the usage of the Copy-on-Chain (`copy`) program which generates a hash of Solana account state in order to include it into the `accounts_delta_hash` which in turn is included in the 
 `BankHash` and is attested to by the validator set. Users can submit a transaction to directly verify the state of an account using these proofs without needing to fully trust the account state information communicated by an intermediary RPC provider. Note that this still carries an honest majority assumption from the validator set, hence we use the term 'attestations'.
 
 ## Background
@@ -47,7 +47,7 @@ hashv(&[
 
 ## The Copy-on-Chain Program
 
-Because an account may not change every slot, a mechanism is required to ensure its latest state can still be included in a recent `BankHash` for cryptographic proof generation. This is where the `copy` on-chain program comes in. It takes an account's state, computes its hash, and copies it into a `CopyAccount`. The alteration of the `CopyAccount` ensures the account's state becomes part of the slot's ‘accounts_delta_hash’, and therefore also part of the`BankHash`, against which a proof can be generated for the user. Checking for an account's modification and its presence in the BankHash is equivalent to checking transaction status because an account is only modified when the transaction is successful. In summary, the purpose of the `copy` program is that calculating and writing the hash ends up modifying `CopyAccount` during a slot and commits to the hash stored in `CopyAccount` as part of the `accounts_delta_hash` which is then rolled into the `BankHash`.
+Because an account may not change every slot, a mechanism is required to ensure its latest state can still be included in a recent `BankHash` for cryptographic proof generation. This is where the Copy-on-Chain (`copy`) program comes in. It takes an account's state, computes its hash, and copies it into a `CopyAccount`. The alteration of the `CopyAccount` ensures the account's state becomes part of the slot's ‘accounts_delta_hash’, and therefore also part of the`BankHash`, against which a proof can be generated for the user. Checking for an account's modification and its presence in the BankHash is equivalent to checking transaction status because an account is only modified when the transaction is successful. In summary, the purpose of the `copy` program is that calculating and writing the hash ends up modifying `CopyAccount` during a slot and commits to the hash stored in `CopyAccount` as part of the `accounts_delta_hash` which is then rolled into the `BankHash`.
 
 * The `copy` program takes two main accounts as input
   * A global scoped PDA - `CopyAccount`
