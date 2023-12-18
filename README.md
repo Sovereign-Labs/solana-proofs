@@ -56,7 +56,7 @@ Because an account may not change every slot, a mechanism is required to ensure 
 * The `copy` program has a single instruction
   1) `copy_hash` reads the fields of `SourceAccount`
   2) The contents of the `SourceAccount` are hashed
-  3)  The hash is written into the `CopyAccount’ data ********8***** field
+  3)  The hash is written into the `CopyAccount` data ********** field
   Note: If there are multiple calls to `copy_hash` in the same block, the hashes are rolled together
 
 * This means that we can now produce 
