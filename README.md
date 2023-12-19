@@ -103,3 +103,30 @@ Regarding the `copy` account, there can be a signer PDA so that each signer can 
 In this initial implementation, we have configured the validators for capturing votes through a geyser configuration. This setup doesn't represent the ideal supermajority of votes we aim to achieve ultimately. However, it does reduce the level of trust a user must place in the data received from an RPC provider. Our goal is to enhance this to encompass a broader quorum of votes, informed by a known validator set and the stake weight of each validator. While this enhancement could await a SIMD implementation like the proposed stake sysvar, it could also be potentially incorporated into the [Epoch Accounts Hash](https://docs.solana.com/implemented-proposals/epoch_accounts_hash#:~:text=This%20will%20be%20known%20as,issues%20within%201%2D2%20epochs.), which doesn't require consensus changes but merits further investigation.
 
 It's important to note that the current implementation doesn't incorporate sessions and is intended purely as a Proof of Concept (PoC). Additionally, the Merkle proof generation logic requires more testing to ensure that it's reliable. Equally crucial is the testing of the logic that manages account, slot, and block updates, transitioning them from raw to processed to confirmed states. There is potential for a more streamlined implementation that could directly integrate into the validator, attaching hooks for confirmed slots, which could simplify the overall process.
+
+## Future Work
+
+### Verifying State Consistency with Non-Inclusion Proofs
+
+The current proof-of-concept only seeks to verify the state of an account at a single point in time. However, a natural requirement for SPV systems is to monitor the state of an account over a longer period. This can also be accommodated in our design. Since the set of modified accounts committed in the `accounts_delta_hash` is ordered lexicographically, it is possible to generate succinct non-inclusion proofs which show that a particular account was *not* modified in a particular block. By verifying one such proof for each block, a online light client can know the current state of an account, even if that account has not been modified for an arbitrary length of time. 
+
+### Alternate Methods of Finding Account State
+
+As described above, a light client can watch for changes to an account's state without sending any on-chain transactions. However, knowing that an account's state hasn't changed is not particularly useful unless you know the what the initial state was. In the previous section, we've described one method for finding that initial state - by using the copy-on-chain program. This program is useful because it only requires *read* access to the target account. However, in many circumstances it may be possible for a user to write to the account they wish to monitor - for example, by sending a single lamport to it. Since any change to the account state will cause it to be included directly in the `accounts_delta_hash`, this method is just as effective as the on-chain copy. However, it has the drawback of requiring write access to the account in question, which may increase contention. 
+
+One drawback of the approach described in this document (and one which is shared by other proposed SPV proposals) is that any attempt to *read* account state usually requires at least one on-chain transaction. However, this need not always be the case. For "popular" accounts which experience frequent writes, clients may be content to simply wait for the next external interaction with the account. And for less frequently touched accounts, clients always have the option of waiting for an epoch boundary to query the state. (Since Solana creates a state commitment every epoch, RPC nodes can be modified to generate a merkle proof of an account's state at the epoch boundary without changes to consensus. However, this will require software changes.)
+
+## Comparison with Existing Design
+
+We close out this document by comparing our approach with the existing proposal for SPV on Solana. In particular, our proposal improves on the existing in three key ways:
+- It functions better under write contention
+- It provides better throughput, since it enables unlimited reads against an account for each write
+- It does *not* require consensus changes
+
+### Write Contention
+
+One major drawback of the existing SPV proposal is that it functions poorly under write contention. By way of reminder, the existing Solana SPV solution requires a light client to submit a transaction verifying that the current state of an account has some particular value, and then check the transaction status to see if that assertion held. Unfortunately, this method can't account for very recent changes to an account's state. Since many of the most "important" accounts on Solana are written several times per block, this SPV method is likely to require numerous retries before succeeding as the state changes just before the assertion is made. On the other hand, our method works *better* when accounts change frequently, since these accounts show up in the `accounts_delta_hash` without any need for interaction by the client.
+
+### Throughput
+
+### Required Consensus Changes
