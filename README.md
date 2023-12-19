@@ -6,7 +6,7 @@ Author: Dubbelosix
 
 ## Abstract
 
-At Sovereign Labs, in the course of research that required attestations on the Solana blockchain state, we have identified a novel way to build on-chain SPV ([Simple Payment Verification](https://docs.solana.com/proposals/simple-payment-and-state-verification)) light clients for the Solana blockchain. Crucially, this method does not necessitate changes to the Solana consensus protocol. We have created a prototype proof-of-concept, available in this repository, which aims to expedite the development of on-chain light clients on Solana by reducing the risks typically associated with modifications to the core protocol.
+At Sovereign Labs, in the course of research that required attestations on the Solana blockchain state, we have identified a novel way to build on-chain SPV ([Simple Payment Verification](https://docs.solana.com/proposals/simple-payment-and-state-verification)) light clients for the Solana blockchain. Crucially, this method does not necessitate changes to the Solana consensus protocol. We have developed a proof-of-concept, available in this repository, which aims to expedite the development of on-chain light clients on Solana by reducing the risks typically associated with modifications to the core protocol.
 
 This solution utilizes the Copy-on-Chain (`copy`) program to generate a hash of the Solana account state. This hash is then included in the `accounts_delta_hash`, which is part of the `BankHash` attested by the validator set.  Using these proofs, users can submit a transaction to directly verify the state of an account without needing to fully trust the account state information communicated by an intermediary RPC provider.
 
