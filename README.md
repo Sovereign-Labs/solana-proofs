@@ -1,7 +1,7 @@
 ---
 Title: "The Copy-on-Chain Mechanism for SPV Light Clients on Solana"
 Created: "2023-11-24"
-Author: Dubbelosix
+Authors: Dubbelosix, Preston Evans
 ---
 
 ## Abstract
@@ -121,12 +121,17 @@ One drawback of the approach described in this document (and one which is shared
 We close out this document by comparing our approach with the existing proposal for SPV on Solana. In particular, our proposal improves on the existing in three key ways:
 - It functions better under write contention
 - It provides better throughput, since it enables unlimited reads against an account for each write
-- It does *not* require consensus changes
+- It does *not* require consensus changes, except as necessary to track changes to the validator set across epoch boundaries
 
 ### Write Contention
 
-One major drawback of the existing SPV proposal is that it functions poorly under write contention. By way of reminder, the existing Solana SPV solution requires a light client to submit a transaction verifying that the current state of an account has some particular value, and then check the transaction status to see if that assertion held. Unfortunately, this method can't account for very recent changes to an account's state. Since many of the most "important" accounts on Solana are written several times per block, this SPV method is likely to require numerous retries before succeeding as the state changes just before the assertion is made. On the other hand, our method works *better* when accounts change frequently, since these accounts show up in the `accounts_delta_hash` without any need for interaction by the client.
+One major drawback of the existing SPV proposal is that it functions poorly under write contention. By way of reminder, the existing Solana SPV solution requires a light client to submit a transaction verifying that the current state of an account has some particular value, and then check the transaction status to see if that assertion held. Unfortunately, this method can't account for very recent changes to an account's state; any writes to the account are racing with the read and can cause it to fail. Since many of the most "important" accounts on Solana are written several times per block, this SPV method is likely to require numerous retries before succeeding. On the other hand, our method works *better* when accounts change frequently, since these accounts show up in the `accounts_delta_hash` without any need for interaction by the client.
 
 ### Throughput
 
+A second drawback to the existing SPV proposal is that it requires reads to go through consensus. This is wasteful, since there is already global consensus on the data to be read! Suppose
+that the number of SPV client reads `S` and the number of validators is `V`. Under the current proposal, the total work performed is `Ω(S*V)`, even if all of the SPV clients are interested in the same account! In our regime, the work in that case will be `Ω(S + V)`, and the linear work can be offloaded to validators which are not participating in consensus. 
+
 ### Required Consensus Changes
+
+Finally, the existing SPV proposal requires a consensus modification to add transaction receipts. On the other hand, our proposal works with the existing block structure. However, it is important to note that this proposal does not include a mechanism for tracking validator sets changes across epoch boundaries. Design of that mechanism is left for future work. 
