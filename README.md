@@ -4,12 +4,11 @@ Created: "2023-11-24"
 Author: Dubbelosix
 ---
 
-## About
+## Abstract
 
-Here we have developed a proof of concept for an on-chain SPV ([Simple Payment Verification](https://docs.solana.com/proposals/simple-payment-and-state-verification)) light client component for the Solana blockchain which will help expedite development on light clients by removing the risks associated with a core protocol change. This work is inspired by a line of research that Sovereign Labs was doing for another feature, which required attestations on state. SPV light clients were not thought to be possible on Solana as it currently exists without further changes to Solana consensus (i.e. transaction receipt roots), but this finding bypasses many of these requirements.
+At Sovereign Labs, in the course of research that required attestations on the Solana blockchain state, we have identified a novel way to build on-chain SPV ([Simple Payment Verification](https://docs.solana.com/proposals/simple-payment-and-state-verification)) light clients for the Solana blockchain. Crucially, this method does not necessitate changes to the Solana consensus protocol. We have created a prototype proof-of-concept, available in this repository, which aims to expedite the development of on-chain light clients on Solana by reducing the risks typically associated with modifications to the core protocol.
 
-The solution here involves the usage of the Copy-on-Chain (`copy`) program which generates a hash of Solana account state in order to include it into the `accounts_delta_hash` which in turn is included in the 
-`BankHash` and is attested to by the validator set. If using these proofs, users can submit a transaction to directly verify the state of an account without needing to fully trust the account state information communicated by an intermediary RPC provider. Note that this still carries trust assumptions from the validator set, hence we use the term 'attestations'.
+This solution utilizes the Copy-on-Chain (`copy`) program to generate a hash of the Solana account state. This hash is then included in the `accounts_delta_hash`, which is part of the `BankHash` attested by the validator set.  Using these proofs, users can submit a transaction to directly verify the state of an account without needing to fully trust the account state information communicated by an intermediary RPC provider.
 
 ## Background
 
