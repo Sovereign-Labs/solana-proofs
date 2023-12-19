@@ -121,7 +121,7 @@ One drawback of the approach described in this document (and one which is shared
 We close out this document by comparing our approach with the existing proposal for SPV on Solana. In particular, our proposal improves on the existing in three key ways:
 - It functions better under write contention
 - It provides better throughput, since it enables unlimited reads against an account for each write
-- It does *not* require consensus changes, except as necessary to track changes to the validator set across epoch boundaries
+- It does *not* require consensus changes
 
 ### Write Contention
 
@@ -134,4 +134,4 @@ that the number of SPV client reads `S` and the number of validators is `V`. Und
 
 ### Required Consensus Changes
 
-Finally, the existing SPV proposal requires a consensus modification to add transaction receipts. On the other hand, our proposal works with the existing block structure. However, it is important to note that this proposal does not include a mechanism for tracking validator sets changes across epoch boundaries. Design of that mechanism is left for future work. 
+Finally, the existing SPV proposal requires a consensus modification to add transaction receipts. On the other hand, our proposal works with the existing block structure.
