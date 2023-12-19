@@ -111,7 +111,8 @@ fn handle_confirmed_slot(
     block_accumulator.remove(&slot);
     processed_slot_account_accumulator.remove(&slot);
     processed_transaction_accumulator.remove(&slot);
-    pending_updates.insert(bank_hash,Update {
+
+    Ok(Update {
         slot,
         root: bank_hash,
         proof: BankHashProof {
@@ -121,9 +122,7 @@ fn handle_confirmed_slot(
             parent_bankhash,
             blockhash,
         },
-    });
-
-    anyhow::bail!("no completed proofs");
+    })
 }
 
 
