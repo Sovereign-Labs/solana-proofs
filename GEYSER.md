@@ -20,29 +20,6 @@ let mut hash = hashv(&[
  * `signature_count_buf` is the number of signatures in the block
  * `last_blockhash` is the "blockhash" - it's different from the bankhash and refers to the last PoH tick after interleaving all the transactions together.
 
-### Clarification about terminology
-* Solana uses multiple terms `slothash`, `bankhash`, `blockhash`
-* `slothash` is the same as `bankhash`. 
-* `blockhash` refers to a PoH tick
-* However, the json rpc is mis-leading. `getBlock` for instance returns data of this example format
-```json
-{
-  "jsonrpc": "2.0",
-  "result": {
-    "blockHeight": 428,
-    "blockTime": null,
-    "blockhash": "3Eq21vXNB5s86c62bVuUfTeaMif1N2kUqRPBmGRJhyTA",
-    "parentSlot": 429,
-    "previousBlockhash": "mfcyqEXB3DnHXki6KjjmZck6YjmZLvpAByy2fj4nh6B",
-    "transactions": [
-    ]
-  },
-  "id": 1
-}
-```
-* In the above response `previousBlockhash` actually refers to the BankHash after the previous block was applied. It corresponds to `parent_hash` used in the previous section
-* `blockhash` however corresponds to the PoH tick.
-
 ## Geyser Plugin
 * We need to prove that the blob has been published to solana. This is accomplished by running a geyser plugin inside the solana validator.
 * The geyser plugin tracks account updates as blocks are executed and merkle proofs are generated against the `accounts_delta_hash`
