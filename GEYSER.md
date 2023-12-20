@@ -20,6 +20,52 @@ let mut hash = hashv(&[
  * `signature_count_buf` is the number of signatures in the block
  * `last_blockhash` is the "blockhash" - it's different from the bankhash and refers to the last PoH tick after interleaving all the transactions together.
 
+### Note about terminology
+* The naming in the solana labs client is slightly confusing with 3 terms (blockhash, bankhash, slothash)
+* The names are also used inconsistently in geyser vs RPC
+* In RPC we have blockhash and previous_blockhash which both refer to the PoH ticks (?)
+* In geyser, we have the following structure
+```
+pub struct ReplicaBlockInfoV2<'a> {
+    pub parent_slot: Slot,
+    pub parent_blockhash: &'a str,
+    pub slot: Slot,
+    pub blockhash: &'a str,
+    pub rewards: &'a [Reward],
+    pub block_time: Option<UnixTimestamp>,
+    pub block_height: Option<u64>,
+    pub executed_transaction_count: u64,
+}
+```
+* We have `parent_blockhash` and `blockhash` but when we see how the values are set in the code - 
+```
+  block_metadata_notifier.notify_block_metadata(
+      bank.parent_slot(),
+      &bank.parent_hash().to_string(),
+      bank.slot(),
+      &bank.last_blockhash().to_string(),
+      &bank.rewards,
+      Some(bank.clock().unix_timestamp),
+      Some(bank.block_height()),
+      bank.executed_transaction_count(),
+  )
+
+    fn notify_block_metadata(
+        &self,
+        parent_slot: u64,
+        parent_blockhash: &str,
+        slot: u64,
+        blockhash: &str,
+        rewards: &RwLock<Vec<(Pubkey, RewardInfo)>>,
+        block_time: Option<UnixTimestamp>,
+        block_height: Option<u64>,
+        executed_transaction_count: u64,
+    );
+```
+* If you observe - `parent_blockhash` is being set to `bank.parent_hash()` while `blockhash` is being set to `bank.last_blockhash()`
+* This is slightly un-intuitive and also different from RPCs, so we would recommend anyone using these structures to get familiar with what they actually represent and not go purely by the naming convention
+
+
 ## Geyser Plugin
 * We need to prove that the blob has been published to solana. This is accomplished by running a geyser plugin inside the solana validator.
 * The geyser plugin tracks account updates as blocks are executed and merkle proofs are generated against the `accounts_delta_hash`
